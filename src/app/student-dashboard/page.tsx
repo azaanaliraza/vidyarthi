@@ -591,13 +591,13 @@ export default function StudentDashboard() {
               <CardContent className="space-y-4">
                 {recentActivities.map((activity) => (
                   <div key={activity.id} className="flex items-center space-x-4">
-                    <div className={`w-2 h-2 ${getActivityColor(activity.type)} rounded-full`}></div>
+                    <div className={`w-2 h-2 ${getActivityColor(activity.type as "certificate" | "acadcoin" | "profile" | "employability")} rounded-full`}></div>
                     <div className="flex-1">
                       <p className="text-sm font-medium">{activity.message}</p>
                       <p className="text-xs text-muted-foreground">{activity.timestamp}</p>
                     </div>
                     {activity.badge && (
-                      <Badge variant={activity.badge.variant} className={activity.badge.className}>
+                      <Badge variant={activity.badge.variant as "default" | "secondary" | "destructive" | "outline"} className={activity.badge.className}>
                         {activity.badge.text}
                       </Badge>
                     )}
