@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { ChevronDown, Shield, GraduationCap, Bot, DollarSign, Building, X, CheckCircle, XCircle, Frown, Search, Lock, Award, TrendingUp, Coins, Users, Eye, FileCheck, Phone, Mail, MapPin } from 'lucide-react';
 
 // Mock form components (shadcn-style)
@@ -41,6 +43,207 @@ const Textarea = ({ className = "", ...props }: { className?: string, [key: stri
   />
 );
 
+const translations = {
+  en: {
+    vidyarthi: "Vidyarthi",
+    govOfIndia: "Government of India",
+    home: "Home",
+    problem: "Problem",
+    solution: "Solution",
+    features: "Features",
+    contact: "Contact",
+    oneUnifiedId: "One Unified ID.",
+    infiniteOpportunities: "Infinite Opportunities.",
+    heroSubtitle: "A simple, secure student ID for education, jobs & scholarships.",
+    heroSubtitle2: "Empowering India's students with verified digital identity.",
+    getVidyarthiId: "Get Vidyarthi ID",
+    forRecruiters: "For Recruiters",
+    trustedBy: "Trusted by Government of India",
+    ministryOfEducation: "Ministry of Education",
+    digilocker: "DigiLocker",
+    aadhaarVerified: "Aadhaar Verified",
+    currentChallenges: "Current Challenges in Indian Education System",
+    challengesSubtitle: "Students and recruiters face multiple issues in the current fragmented system",
+    fakeResumes: "Fake Resumes",
+    fakeResumesDesc: "Unverified certificates and false information in applications create hiring challenges",
+    repeatedFormFilling: "Repeated Form Filling",
+    repeatedFormFillingDesc: "Students waste time filling the same information across multiple platforms",
+    missingScholarships: "Missing Scholarships",
+    missingScholarshipsDesc: "Eligible students miss out on scholarships due to lack of awareness and complex processes",
+    noTransparency: "No Transparency for Recruiters",
+    noTransparencyDesc: "Employers struggle to verify candidate credentials and find suitable talent",
+    ourSolution: "Our Solution – Vidyarthi",
+    ourSolutionSubtitle: "A comprehensive digital identity platform for Indian students",
+    secureStudentId: "Secure Student ID",
+    secureStudentIdDesc: "Aadhaar-linked digital identity with government-grade security",
+    verifiedCertificates: "Verified Certificates",
+    verifiedCertificatesDesc: "Blockchain-verified educational credentials and achievements",
+    employabilityScore: "Employability Score",
+    employabilityScoreDesc: "AI-powered assessment of skills and career readiness",
+    acadCoinRewards: "AcadCoin Rewards",
+    acadCoinRewardsDesc: "Earn digital currency for academic achievements and activities",
+    recruiterDashboard: "Recruiter Dashboard",
+    recruiterDashboardDesc: "Advanced hiring tools with verified candidate database",
+    howItWorks: "How It Works - 3 Simple Steps",
+    howItWorksSubtitle: "Easy onboarding process for students and recruiters",
+    step1Title: "Student Creates Vidyarthi ID",
+    step1Desc: "Register using DigiLocker authentication. Upload and verify educational certificates through secure blockchain technology.",
+    step2Title: "Data Verified & Score Generated",
+    step2Desc: "AI algorithms analyze credentials and generate employability score. Earn AcadCoins for verified achievements.",
+    step3Title: "Recruiter Views Profile",
+    step3Desc: "Employers access verified profiles. Students control what information to share with complete transparency.",
+    impact: "Impact Across Stakeholders",
+    impactSubtitle: "Creating value for students, recruiters, and government",
+    forStudents: "For Students",
+    studentBenefit1: "Easy access to scholarships and opportunities",
+    studentBenefit2: "No more fake documentation issues",
+    studentBenefit3: "Single profile for multiple applications",
+    studentBenefit4: "Reward system for achievements",
+    forRecruitersImpact: "For Recruiters",
+    recruiterBenefit1: "Trusted hiring with verified profiles",
+    recruiterBenefit2: "Advanced filtering and search tools",
+    recruiterBenefit3: "Reduced hiring time and costs",
+    recruiterBenefit4: "Access to employability scores",
+    forGovernment: "For Government",
+    governmentBenefit1: "Better transparency in education sector",
+    governmentBenefit2: "Efficient scholarship distribution",
+    governmentBenefit3: "Real-time education analytics",
+    governmentBenefit4: "Reduced administrative overhead",
+    transformingEducation: "Transforming Indian Education",
+    transformingEducationSubtitle: "Join millions of students in building a verified digital future",
+    studentsInIndia: "Students in India",
+    educationalInstitutions: "Educational Institutions",
+    higherEducationInstitutions: "Higher Education Institutions",
+    annualScholarshipBudget: "Annual Scholarship Budget",
+    empoweringStudents: "Empowering India's students with secure, verified digital identity for education, employment, and scholarships.",
+    quickLinks: "Quick Links",
+    aboutVidyarthi: "About Vidyarthi",
+    privacyPolicy: "Privacy Policy",
+    termsOfService: "Terms of Service",
+    helpSupport: "Help & Support",
+    governmentLinks: "Government Links",
+    rti: "RTI",
+    contactInformation: "Contact Information",
+    contactAddress: "Ministry of Education<br />Shastri Bhawan, New Delhi<br />110001, India",
+    copyright: "© 2025 Vidyarthi - Government of India. All rights reserved.",
+    lastUpdated: "Last Updated: January 2025",
+    visitors: "Visitors: 1,234,567",
+    contactVidyarthiTeam: "Contact Vidyarthi Team",
+    userType: "User Type",
+    student: "Student",
+    recruiter: "Recruiter",
+    name: "Name",
+    email: "Email",
+    phoneNumber: "Phone Number",
+    organization: "Organization",
+    message: "Message",
+    submit: "Submit",
+    thankYouMessage: "Thank you for your interest! We will contact you soon.",
+    redirectingMessage: "Redirecting to DigiLocker for secure authentication...",
+    redirecting: "Redirecting...",
+    governmentInitiative: "Government Initiative"
+  },
+  hi: {
+    vidyarthi: "विद्यार्थी",
+    govOfIndia: "भारत सरकार",
+    home: "होम",
+    problem: "समस्या",
+    solution: "समाधान",
+    features: "विशेषताएँ",
+    contact: "संपर्क",
+    oneUnifiedId: "एक एकीकृत आईडी।",
+    infiniteOpportunities: "अनंत अवसर।",
+    heroSubtitle: "शिक्षा, नौकरियों और छात्रवृत्ति के लिए एक सरल, सुरक्षित छात्र आईडी।",
+    heroSubtitle2: "सत्यापित डिजिटल पहचान के साथ भारत के छात्रों को सशक्त बनाना।",
+    getVidyarthiId: "विद्यार्थी आईडी प्राप्त करें",
+    forRecruiters: "भर्ती करने वालों के लिए",
+    trustedBy: "भारत सरकार द्वारा विश्वसनीय",
+    ministryOfEducation: "शिक्षा मंत्रालय",
+    digilocker: "डिजीलॉकर",
+    aadhaarVerified: "आधार सत्यापित",
+    currentChallenges: "भारतीय शिक्षा प्रणाली में वर्तमान चुनौतियाँ",
+    challengesSubtitle: "छात्रों और भर्ती करने वालों को वर्तमान खंडित प्रणाली में कई समस्याओं का सामना करना पड़ता है",
+    fakeResumes: "फर्जी बायोडाटा",
+    fakeResumesDesc: "अਣ-सत्यापित प्रमाण पत्र और आवेदनों में गलत जानकारी भर्ती चुनौतियों का निर्माण करती है",
+    repeatedFormFilling: "बार-बार फॉर्म भरना",
+    repeatedFormFillingDesc: "छात्र कई प्लेटफार्मों पर एक ही जानकारी भरने में समय बर्बाद करते हैं",
+    missingScholarships: "छूटी हुई छात्रवृत्तियाँ",
+    missingScholarshipsDesc: "जागरूकता की कमी और जटिल प्रक्रियाओं के कारण योग्य छात्र छात्रवृत्ति से चूक जाते हैं",
+    noTransparency: "भर्ती करने वालों के लिए कोई पारदर्शिता नहीं",
+    noTransparencyDesc: "नियोक्ता उम्मीदवार की साख को सत्यापित करने और उपयुक्त प्रतिभा खोजने के लिए संघर्ष करते हैं",
+    ourSolution: "हमारा समाधान - विद्यार्थी",
+    ourSolutionSubtitle: "भारतीय छात्रों के लिए एक व्यापक डिजिटल पहचान मंच",
+    secureStudentId: "सुरक्षित छात्र आईडी",
+    secureStudentIdDesc: "सरकारी स्तर की सुरक्षा के साथ आधार-लिंक्ड डिजिटल पहचान",
+    verifiedCertificates: "सत्यापित प्रमाण पत्र",
+    verifiedCertificatesDesc: "ब्लॉकचेन-सत्यापित शैक्षिक साख और उपलब्धियां",
+    employabilityScore: "रोजगार योग्यता स्कोर",
+    employabilityScoreDesc: "कौशल और कैरियर की तैयारी का एआई-संचालित मूल्यांकन",
+    acadCoinRewards: "एकाडकॉइन पुरस्कार",
+    acadCoinRewardsDesc: "शैक्षणिक उपलब्धियों और गतिविधियों के लिए डिजिटल मुद्रा अर्जित करें",
+    recruiterDashboard: "रिक्रूटर डैशबोर्ड",
+    recruiterDashboardDesc: "सत्यापित उम्मीदवार डेटाबेस के साथ उन्नत भर्ती उपकरण",
+    howItWorks: "यह कैसे काम करता है - 3 सरल चरण",
+    howItWorksSubtitle: "छात्रों और भर्ती करने वालों के लिए आसान ऑनबोर्डिंग प्रक्रिया",
+    step1Title: "छात्र विद्यार्थी आईडी बनाता है",
+    step1Desc: "डिजीलॉकर प्रमाणीकरण का उपयोग करके पंजीकरण करें। सुरक्षित ब्लॉकचेन तकनीक के माध्यम से शैक्षिक प्रमाण पत्र अपलोड और सत्यापित करें।",
+    step2Title: "डेटा सत्यापित और स्कोर उत्पन्न",
+    step2Desc: "एआई एल्गोरिदम क्रेडेंशियल्स का विश्लेषण करते हैं और रोजगार योग्यता स्कोर उत्पन्न करते हैं। सत्यापित उपलब्धियों के लिए AcadCoins अर्जित करें।",
+    step3Title: "रिक्रूटर प्रोफाइल देखता है",
+    step3Desc: "नियोक्ता सत्यापित प्रोफाइल तक पहुंचते हैं। छात्र पूरी पारदर्शिता के साथ साझा करने के लिए कौन सी जानकारी चुनते हैं।",
+    impact: "हितधारकों पर प्रभाव",
+    impactSubtitle: "छात्रों, भर्ती करने वालों और सरकार के लिए मूल्य बनाना",
+    forStudents: "छात्रों के लिए",
+    studentBenefit1: "छात्रवृत्ति और अवसरों तक आसान पहुंच",
+    studentBenefit2: "अब कोई नकली दस्तावेज़ीकरण समस्या नहीं",
+    studentBenefit3: "कई आवेदनों के लिए एकल प्रोफाइल",
+    studentBenefit4: "उपलब्धियों के लिए पुरस्कार प्रणाली",
+    forRecruitersImpact: "भर्ती करने वालों के लिए",
+    recruiterBenefit1: "सत्यापित प्रोफाइल के साथ विश्वसनीय भर्ती",
+    recruiterBenefit2: "उन्नत फ़िल्टरिंग और खोज उपकरण",
+    recruiterBenefit3: "भर्ती के समय और लागत में कमी",
+    recruiterBenefit4: "रोजगार योग्यता स्कोर तक पहुंच",
+    forGovernment: "सरकार के लिए",
+    governmentBenefit1: "शिक्षा क्षेत्र में बेहतर पारदर्शिता",
+    governmentBenefit2: "कुशल छात्रवृत्ति वितरण",
+    governmentBenefit3: "वास्तविक समय शिक्षा विश्लेषण",
+    governmentBenefit4: "प्रशासनिक उपरिव्यय में कमी",
+    transformingEducation: "भारतीय शिक्षा को बदलना",
+    transformingEducationSubtitle: "एक सत्यापित डिजिटल भविष्य बनाने में लाखों छात्रों से जुड़ें",
+    studentsInIndia: "भारत में छात्र",
+    educationalInstitutions: "शैक्षणिक संस्थान",
+    higherEducationInstitutions: "उच्च शिक्षण संस्थान",
+    annualScholarshipBudget: "वार्षिक छात्रवृत्ति बजट",
+    empoweringStudents: "शिक्षा, रोजगार और छात्रवृत्ति के लिए सुरक्षित, सत्यापित डिजिटल पहचान के साथ भारत के छात्रों को सशक्त बनाना।",
+    quickLinks: "त्वरित सम्पक",
+    aboutVidyarthi: "विद्यार्थी के बारे में",
+    privacyPolicy: "गोपनीयता नीति",
+    termsOfService: "सेवा की शर्तें",
+    helpSupport: "सहायता और समर्थन",
+    governmentLinks: "सरकारी लिंक",
+    rti: "आरटीआई",
+    contactInformation: "संपर्क जानकारी",
+    contactAddress: "शिक्षा मंत्रालय<br />शास्त्री भवन, नई दिल्ली<br />110001, भारत",
+    copyright: "© 2025 विद्यार्थी - भारत सरकार। सर्वाधिकार सुरक्षित।",
+    lastUpdated: "अंतिम अपडेट: जनवरी 2025",
+    visitors: "आगंतुक: 1,234,567",
+    contactVidyarthiTeam: "विद्यार्थी टीम से संपर्क करें",
+    userType: "उपयोगकर्ता प्रकार",
+    student: "छात्र",
+    recruiter: "भर्ती करने वाला",
+    name: "नाम",
+    email: "ईमेल",
+    phoneNumber: "फ़ोन नंबर",
+    organization: "संगठन",
+    message: "संदेश",
+    submit: "प्रस्तुत",
+    thankYouMessage: "आपकी रुचि के लिए धन्यवाद! हम जल्द ही आपसे संपर्क करेंगे।",
+    redirectingMessage: "सुरक्षित प्रमाणीकरण के लिए डिजीलॉker पर रीडायरेक्ट किया जा रहा है...",
+    redirecting: "रीडायरेक्ट कर रहा है...",
+    governmentInitiative: "सरकारी पहल"
+  }
+};
+
 const Home = () => {
   const [activeSection, setActiveSection] = useState('home');
   const [showContactForm, setShowContactForm] = useState(false);
@@ -54,6 +257,12 @@ const Home = () => {
     message: '',
     userType: 'student'
   });
+  const [language, setLanguage] = useState<'en' | 'hi'>('en');
+  const t = translations[language as 'en' | 'hi'];
+
+  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setLanguage(e.target.value as 'en' | 'hi');
+  };
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -66,7 +275,7 @@ const Home = () => {
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Contact form submitted:', formData);
-    setContactMessage('Thank you for your interest! We will contact you soon.');
+    setContactMessage(t.thankYouMessage);
     setTimeout(() => {
       setShowContactForm(false);
       setContactMessage('');
@@ -88,10 +297,14 @@ const Home = () => {
     });
   };
 
+  const router = useRouter();
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
   const handleDigiLockerLogin = () => {
     setShowLoginMessage(true);
+    setIsRedirecting(true);
     setTimeout(() => {
-      setShowLoginMessage(false);
+      router.push('/student-dashboard');
     }, 2000);
   };
 
@@ -106,17 +319,16 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full flex items-center justify-center">
-                <GraduationCap className="w-8 h-8 text-white" />
+              <div className="w-12 h-12 flex items-center justify-center">
               </div>
               <div>
-                <h1 className="text-xl font-bold" style={{ color: '#000080' }}>Vidyarthi</h1>
-                <p className="text-xs text-gray-600">Government of India</p>
+                <h1 className="text-xl font-bold" style={{ color: '#000080' }}>{t.vidyarthi}</h1>
+                <p className="text-xs text-gray-600">{t.govOfIndia}</p>
               </div>
             </div>
             
             <nav className="hidden md:flex space-x-8">
-              {['Home', 'Problem', 'Solution', 'Features', 'Contact'].map((item) => (
+              {[t.home, t.problem, t.solution, t.features, t.contact].map((item) => (
                 <button
                   key={item}
                   onClick={() => scrollToSection(item.toLowerCase())}
@@ -132,9 +344,9 @@ const Home = () => {
             </nav>
             
             <div className="flex items-center space-x-2">
-              <select className="text-sm border rounded px-2 py-1" style={{ color: '#000080' }}>
-                <option>English</option>
-                <option>हिंदी</option>
+              <select value={language} onChange={handleLanguageChange} className="text-sm border rounded px-2 py-1" style={{ color: '#000080' }}>
+                <option value="en">English</option>
+                <option value="hi">हिंदी</option>
               </select>
             </div>
           </div>
@@ -150,20 +362,20 @@ const Home = () => {
             <div className="mb-6">
               <div className="inline-flex items-center space-x-2 bg-white/10 rounded-full px-4 py-2 text-white">
                 <Shield className="w-4 h-4" />
-                <span className="text-sm">Government Initiative</span>
+                <span className="text-sm">{t.governmentInitiative}</span>
               </div>
             </div>
             
             <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-              One Unified ID.
+              {t.oneUnifiedId}
               <br />
-              <span className="text-orange-400">Infinite Opportunities.</span>
+              <span className="text-orange-400">{t.infiniteOpportunities}</span>
             </h1>
             
             <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto">
-              A simple, secure student ID for education, jobs & scholarships.
+              {t.heroSubtitle}
               <br />
-              Empowering India's students with verified digital identity.
+              {t.heroSubtitle2}
             </p>
             
             <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
@@ -171,29 +383,37 @@ const Home = () => {
                 size="lg" 
                 className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg"
                 onClick={handleDigiLockerLogin}
+                disabled={isRedirecting}
               >
-                <Shield className="w-5 h-5 mr-2" />
-                Get Vidyarthi ID
+                {isRedirecting ? (
+                  t.redirecting
+                ) : (
+                  <>
+                    <Shield className="w-5 h-5 mr-2" />
+                    {t.getVidyarthiId}
+                  </>
+                )}
               </Button>
-              <Button 
-                variant="outline" 
-                size="lg" 
-                className="border-white text-white hover:bg-white hover:text-blue-900 px-8 py-4 text-lg"
-                onClick={() => setShowContactForm(true)}
-              >
-                <Building className="w-5 h-5 mr-2" />
-                For Recruiters
-              </Button>
+              <Link href="/recruiter-dashboard">
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  className="border-white text-white hover:bg-white hover:text-blue-900 px-8 py-4 text-lg"
+                >
+                  <Building className="w-5 h-5 mr-2" />
+                  {t.forRecruiters}
+                </Button>
+              </Link>
             </div>
             
             <div className="mt-12 text-white/80">
-              <p className="text-sm mb-4">Trusted by Government of India</p>
+              <p className="text-sm mb-4">{t.trustedBy}</p>
               <div className="flex justify-center items-center space-x-8 opacity-60">
-                <span>Ministry of Education</span>
+                <span>{t.ministryOfEducation}</span>
                 <span>•</span>
-                <span>DigiLocker</span>
+                <span>{t.digilocker}</span>
                 <span>•</span>
-                <span>Aadhaar Verified</span>
+                <span>{t.aadhaarVerified}</span>
               </div>
             </div>
           </div>
@@ -205,10 +425,10 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-6" style={{ color: '#000080' }}>
-              Current Challenges in Indian Education System
+              {t.currentChallenges}
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Students and recruiters face multiple issues in the current fragmented system
+              {t.challengesSubtitle}
             </p>
           </div>
           
@@ -216,9 +436,9 @@ const Home = () => {
             <div className="bg-white p-8 rounded-lg shadow-sm border border-red-100">
               <div className="text-center">
                 <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Fake Resumes</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">{t.fakeResumes}</h3>
                 <p className="text-gray-600">
-                  Unverified certificates and false information in applications create hiring challenges
+                  {t.fakeResumesDesc}
                 </p>
               </div>
             </div>
@@ -226,9 +446,9 @@ const Home = () => {
             <div className="bg-white p-8 rounded-lg shadow-sm border border-yellow-100">
               <div className="text-center">
                 <Frown className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Repeated Form Filling</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">{t.repeatedFormFilling}</h3>
                 <p className="text-gray-600">
-                  Students waste time filling the same information across multiple platforms
+                  {t.repeatedFormFillingDesc}
                 </p>
               </div>
             </div>
@@ -236,9 +456,9 @@ const Home = () => {
             <div className="bg-white p-8 rounded-lg shadow-sm border border-blue-100">
               <div className="text-center">
                 <GraduationCap className="w-16 h-16 text-blue-500 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Missing Scholarships</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">{t.missingScholarships}</h3>
                 <p className="text-gray-600">
-                  Eligible students miss out on scholarships due to lack of awareness and complex processes
+                  {t.missingScholarshipsDesc}
                 </p>
               </div>
             </div>
@@ -246,9 +466,9 @@ const Home = () => {
             <div className="bg-white p-8 rounded-lg shadow-sm border border-purple-100">
               <div className="text-center">
                 <Search className="w-16 h-16 text-purple-500 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">No Transparency for Recruiters</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">{t.noTransparency}</h3>
                 <p className="text-gray-600">
-                  Employers struggle to verify candidate credentials and find suitable talent
+                  {t.noTransparencyDesc}
                 </p>
               </div>
             </div>
@@ -261,10 +481,10 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-6" style={{ color: '#000080' }}>
-              Our Solution – Vidyarthi
+              {t.ourSolution}
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              A comprehensive digital identity platform for Indian students
+              {t.ourSolutionSubtitle}
             </p>
           </div>
           
@@ -272,9 +492,9 @@ const Home = () => {
             <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl">
               <div className="text-center">
                 <Lock className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Secure Student ID</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t.secureStudentId}</h3>
                 <p className="text-sm text-gray-600">
-                  Aadhaar-linked digital identity with government-grade security
+                  {t.secureStudentIdDesc}
                 </p>
               </div>
             </div>
@@ -282,9 +502,9 @@ const Home = () => {
             <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl">
               <div className="text-center">
                 <Award className="w-12 h-12 text-green-600 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Verified Certificates</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t.verifiedCertificates}</h3>
                 <p className="text-sm text-gray-600">
-                  Blockchain-verified educational credentials and achievements
+                  {t.verifiedCertificatesDesc}
                 </p>
               </div>
             </div>
@@ -292,9 +512,9 @@ const Home = () => {
             <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl">
               <div className="text-center">
                 <TrendingUp className="w-12 h-12 text-purple-600 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Employability Score</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t.employabilityScore}</h3>
                 <p className="text-sm text-gray-600">
-                  AI-powered assessment of skills and career readiness
+                  {t.employabilityScoreDesc}
                 </p>
               </div>
             </div>
@@ -302,9 +522,9 @@ const Home = () => {
             <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-xl">
               <div className="text-center">
                 <Coins className="w-12 h-12 text-orange-600 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">AcadCoin Rewards</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t.acadCoinRewards}</h3>
                 <p className="text-sm text-gray-600">
-                  Earn digital currency for academic achievements and activities
+                  {t.acadCoinRewardsDesc}
                 </p>
               </div>
             </div>
@@ -312,9 +532,9 @@ const Home = () => {
             <div className="bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl">
               <div className="text-center">
                 <Users className="w-12 h-12 text-red-600 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Recruiter Dashboard</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t.recruiterDashboard}</h3>
                 <p className="text-sm text-gray-600">
-                  Advanced hiring tools with verified candidate database
+                  {t.recruiterDashboardDesc}
                 </p>
               </div>
             </div>
@@ -327,10 +547,10 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-6" style={{ color: '#000080' }}>
-              How It Works - 3 Simple Steps
+              {t.howItWorks}
             </h2>
             <p className="text-xl text-gray-600">
-              Easy onboarding process for students and recruiters
+              {t.howItWorksSubtitle}
             </p>
           </div>
           
@@ -340,10 +560,10 @@ const Home = () => {
                 <span className="text-3xl font-bold text-white">1</span>
               </div>
               <h3 className="text-xl font-semibold mb-4" style={{ color: '#000080' }}>
-                Student Creates Vidyarthi ID
+                {t.step1Title}
               </h3>
               <p className="text-gray-600">
-                Register using DigiLocker authentication. Upload and verify educational certificates through secure blockchain technology.
+                {t.step1Desc}
               </p>
             </div>
             
@@ -352,10 +572,10 @@ const Home = () => {
                 <span className="text-3xl font-bold text-white">2</span>
               </div>
               <h3 className="text-xl font-semibold mb-4" style={{ color: '#000080' }}>
-                Data Verified & Score Generated
+                {t.step2Title}
               </h3>
               <p className="text-gray-600">
-                AI algorithms analyze credentials and generate employability score. Earn AcadCoins for verified achievements.
+                {t.step2Desc}
               </p>
             </div>
             
@@ -364,10 +584,10 @@ const Home = () => {
                 <span className="text-3xl font-bold text-white">3</span>
               </div>
               <h3 className="text-xl font-semibold mb-4" style={{ color: '#000080' }}>
-                Recruiter Views Profile
+                {t.step3Title}
               </h3>
               <p className="text-gray-600">
-                Employers access verified profiles. Students control what information to share with complete transparency.
+                {t.step3Desc}
               </p>
             </div>
           </div>
@@ -379,79 +599,79 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-6" style={{ color: '#000080' }}>
-              Impact Across Stakeholders
+              {t.impact}
             </h2>
             <p className="text-xl text-gray-600">
-              Creating value for students, recruiters, and government
+              {t.impactSubtitle}
             </p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-12">
             <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-xl">
               <GraduationCap className="w-12 h-12 text-blue-600 mb-4" />
-              <h3 className="text-xl font-semibold mb-4 text-gray-900">For Students</h3>
+              <h3 className="text-xl font-semibold mb-4 text-gray-900">{t.forStudents}</h3>
               <ul className="space-y-2 text-gray-600">
                 <li className="flex items-center">
                   <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
-                  Easy access to scholarships and opportunities
+                  {t.studentBenefit1}
                 </li>
                 <li className="flex items-center">
                   <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
-                  No more fake documentation issues
+                  {t.studentBenefit2}
                 </li>
                 <li className="flex items-center">
                   <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
-                  Single profile for multiple applications
+                  {t.studentBenefit3}
                 </li>
                 <li className="flex items-center">
                   <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
-                  Reward system for achievements
+                  {t.studentBenefit4}
                 </li>
               </ul>
             </div>
             
             <div className="bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-xl">
               <Building className="w-12 h-12 text-green-600 mb-4" />
-              <h3 className="text-xl font-semibold mb-4 text-gray-900">For Recruiters</h3>
+              <h3 className="text-xl font-semibold mb-4 text-gray-900">{t.forRecruitersImpact}</h3>
               <ul className="space-y-2 text-gray-600">
                 <li className="flex items-center">
                   <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
-                  Trusted hiring with verified profiles
+                  {t.recruiterBenefit1}
                 </li>
                 <li className="flex items-center">
                   <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
-                  Advanced filtering and search tools
+                  {t.recruiterBenefit2}
                 </li>
                 <li className="flex items-center">
                   <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
-                  Reduced hiring time and costs
+                  {t.recruiterBenefit3}
                 </li>
                 <li className="flex items-center">
                   <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
-                  Access to employability scores
+                  {t.recruiterBenefit4}
                 </li>
               </ul>
             </div>
             
             <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-8 rounded-xl">
               <Shield className="w-12 h-12 text-orange-600 mb-4" />
-              <h3 className="text-xl font-semibold mb-4 text-gray-900">For Government</h3>
+              <h3 className="text-xl font-semibold mb-4 text-gray-900">{t.forGovernment}</h3>
               <ul className="space-y-2 text-gray-600">
                 <li className="flex items-center">
                   <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
-                  Better transparency in education sector
+                  {t.governmentBenefit1}
                 </li>
                 <li className="flex items-center">
                   <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
-                  Efficient scholarship distribution
+                  {t.governmentBenefit2}
                 </li>
                 <li className="flex items-center">
                   <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
-                  Real-time education analytics
+                  {t.governmentBenefit3}
                 </li>
                 <li className="flex items-center">
                   <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
-                  Reduced administrative overhead
+                  {t.governmentBenefit4}
                 </li>
               </ul>
             </div>
@@ -464,29 +684,29 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-6">
-              Transforming Indian Education
+              {t.transformingEducation}
             </h2>
             <p className="text-xl text-white/80">
-              Join millions of students in building a verified digital future
+              {t.transformingEducationSubtitle}
             </p>
           </div>
           
           <div className="grid md:grid-cols-4 gap-8 text-center">
             <div className="text-white">
               <div className="text-4xl font-bold text-orange-400 mb-2">250M+</div>
-              <div className="text-white/80">Students in India</div>
+              <div className="text-white/80">{t.studentsInIndia}</div>
             </div>
             <div className="text-white">
               <div className="text-4xl font-bold text-orange-400 mb-2">1.5M+</div>
-              <div className="text-white/80">Educational Institutions</div>
+              <div className="text-white/80">{t.educationalInstitutions}</div>
             </div>
             <div className="text-white">
               <div className="text-4xl font-bold text-orange-400 mb-2">50K+</div>
-              <div className="text-white/80">Higher Education Institutions</div>
+              <div className="text-white/80">{t.higherEducationInstitutions}</div>
             </div>
             <div className="text-white">
               <div className="text-4xl font-bold text-orange-400 mb-2">₹2L Cr</div>
-              <div className="text-white/80">Annual Scholarship Budget</div>
+              <div className="text-white/80">{t.annualScholarshipBudget}</div>
             </div>
           </div>
         </div>
@@ -502,37 +722,37 @@ const Home = () => {
                   <GraduationCap className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold">Vidyarthi</h3>
-                  <p className="text-xs text-gray-400">Government of India</p>
+                  <h3 className="text-xl font-bold">{t.vidyarthi}</h3>
+                  <p className="text-xs text-gray-400">{t.govOfIndia}</p>
                 </div>
               </div>
               <p className="text-gray-400 text-sm mb-4">
-                Empowering India's students with secure, verified digital identity for education, employment, and scholarships.
+                {t.empoweringStudents}
               </p>
             </div>
             
             <div>
-              <h4 className="text-lg font-semibold mb-4 text-orange-400">Quick Links</h4>
+              <h4 className="text-lg font-semibold mb-4 text-orange-400">{t.quickLinks}</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">About Vidyarthi</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Help & Support</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">{t.aboutVidyarthi}</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">{t.privacyPolicy}</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">{t.termsOfService}</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">{t.helpSupport}</a></li>
               </ul>
             </div>
             
             <div>
-              <h4 className="text-lg font-semibold mb-4 text-orange-400">Government Links</h4>
+              <h4 className="text-lg font-semibold mb-4 text-orange-400">{t.governmentLinks}</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Ministry of Education</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">DigiLocker</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">{t.ministryOfEducation}</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">{t.digilocker}</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-white transition-colors">India.gov.in</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">RTI</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">{t.rti}</a></li>
               </ul>
             </div>
             
             <div>
-              <h4 className="text-lg font-semibold mb-4 text-orange-400">Contact Information</h4>
+              <h4 className="text-lg font-semibold mb-4 text-orange-400">{t.contactInformation}</h4>
               <div className="space-y-3 text-sm">
                 <div className="flex items-center">
                   <Phone className="w-4 h-4 text-orange-400 mr-2" />
@@ -544,10 +764,7 @@ const Home = () => {
                 </div>
                 <div className="flex items-start">
                   <MapPin className="w-4 h-4 text-orange-400 mr-2 mt-0.5" />
-                  <span className="text-gray-400">
-                    Ministry of Education<br />
-                    Shastri Bhawan, New Delhi<br />
-                    110001, India
+                  <span className="text-gray-400" dangerouslySetInnerHTML={{ __html: t.contactAddress }}>
                   </span>
                 </div>
               </div>
@@ -557,12 +774,12 @@ const Home = () => {
           <div className="border-t border-gray-700 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <p className="text-gray-400 text-sm">
-                © 2025 Vidyarthi - Government of India. All rights reserved.
+                {t.copyright}
               </p>
               <div className="flex items-center space-x-6 mt-4 md:mt-0">
-                <span className="text-gray-400 text-sm">Last Updated: January 2025</span>
+                <span className="text-gray-400 text-sm">{t.lastUpdated}</span>
                 <span className="text-gray-400 text-sm">|</span>
-                <span className="text-gray-400 text-sm">Visitors: 1,234,567</span>
+                <span className="text-gray-400 text-sm">{t.visitors}</span>
               </div>
             </div>
           </div>
@@ -576,7 +793,7 @@ const Home = () => {
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-xl font-bold" style={{ color: '#000080' }}>
-                  Contact Vidyarthi Team
+                  {t.contactVidyarthiTeam}
                 </h3>
                 <button onClick={() => setShowContactForm(false)}>
                   <X className="w-6 h-6 text-gray-500" />
@@ -587,7 +804,7 @@ const Home = () => {
                 <form onSubmit={handleContactSubmit} className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      User Type
+                      {t.userType}
                     </label>
                     <select
                       name="userType"
@@ -596,13 +813,13 @@ const Home = () => {
                       className="w-full border border-gray-300 rounded-md px-3 py-2"
                       required
                     >
-                      <option value="student">Student</option>
-                      <option value="recruiter">Recruiter</option>
+                      <option value="student">{t.student}</option>
+                      <option value="recruiter">{t.recruiter}</option>
                     </select>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Name
+                      {t.name}
                     </label>
                     <Input 
                       type="text"
@@ -614,7 +831,7 @@ const Home = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Email
+                      {t.email}
                     </label>
                     <Input
                       type="email"
@@ -626,7 +843,7 @@ const Home = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Phone Number
+                      {t.phoneNumber}
                     </label>
                     <Input
                       type="tel"
@@ -638,7 +855,7 @@ const Home = () => {
                   {formData.userType === 'recruiter' && (
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Organization
+                        {t.organization}
                       </label>
                       <Input
                         type="text"
@@ -650,7 +867,7 @@ const Home = () => {
                   )}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Message
+                      {t.message}
                     </label>
                     <Textarea
                       name="message"
@@ -660,7 +877,7 @@ const Home = () => {
                     />
                   </div>
                   <Button type="submit" className="w-full">
-                    Submit
+                    {t.submit}
                   </Button>
                 </form>
               ) : (
@@ -679,7 +896,7 @@ const Home = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg p-6 max-w-sm w-full text-center">
             <Lock className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-            <p className="text-lg font-semibold text-gray-800">Redirecting to DigiLocker for secure authentication...</p>
+            <p className="text-lg font-semibold text-gray-800">{t.redirectingMessage}</p>
           </div>
         </div>
       )}
