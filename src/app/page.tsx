@@ -238,7 +238,7 @@ const translations = {
     message: "संदेश",
     submit: "प्रस्तुत",
     thankYouMessage: "आपकी रुचि के लिए धन्यवाद! हम जल्द ही आपसे संपर्क करेंगे।",
-    redirectingMessage: "सुरक्षित प्रमाणीकरण के लिए डिजीलॉker पर रीडायरेक्ट किया जा रहा है...",
+    redirectingMessage: "सुरक्षित प्रमाणीकरण के लिए डिजीलॉकर पर रीडायरेक्ट किया जा रहा है...",
     redirecting: "रीडायरेक्ट कर रहा है...",
     governmentInitiative: "सरकारी पहल"
   }
