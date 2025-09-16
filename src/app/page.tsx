@@ -762,11 +762,6 @@ const Home = () => {
                   <Mail className="w-4 h-4 text-orange-400 mr-2" />
                   <span className="text-gray-400">support@vidyarthi.gov.in</span>
                 </div>
-                <div className="flex items-start">
-                  <MapPin className="w-4 h-4 text-orange-400 mr-2 mt-0.5" />
-                  <span className="text-gray-400" dangerouslySetInnerHTML={{ __html: t.contactAddress }}>
-                  </span>
-                </div>
               </div>
             </div>
           </div>
@@ -777,9 +772,7 @@ const Home = () => {
                 {t.copyright}
               </p>
               <div className="flex items-center space-x-6 mt-4 md:mt-0">
-                <span className="text-gray-400 text-sm">{t.lastUpdated}</span>
                 <span className="text-gray-400 text-sm">|</span>
-                <span className="text-gray-400 text-sm">{t.visitors}</span>
               </div>
             </div>
           </div>

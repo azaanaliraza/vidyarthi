@@ -356,6 +356,7 @@ const initialMockData = {
     name: "Ritik Kumar",
     email: "ritik.kumar@iit.ac.in",
     major: "Computer Science & Engineering",
+    vidid: "1100**********06",  
     avatar: "/indian-male-student.png",
     profileCompletion: 92,
   },
@@ -594,7 +595,7 @@ export default function StudentDashboard() {
                 <img src={currentUser.avatar || "/placeholder.svg"} alt={currentUser.name} className="w-8 h-8 rounded-full border-2 border-white" />
                 <div className="hidden sm:block text-sm">
                   <p className="font-medium">{currentUser.name}</p>
-                  <p className="text-xs text-blue-100">{currentUser.major}</p>
+                  <p className="text-xs text-blue-100">{currentUser.vidid}</p>
                 </div>
               </div>
             </div>
