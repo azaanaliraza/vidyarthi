@@ -357,7 +357,7 @@ const initialMockData = {
     email: "ritik.kumar@iit.ac.in",
     major: "Computer Science & Engineering",
     vidid: "1100**********06",  
-    avatar: "/indian-male-student.png",
+    avatar: "/bhadu-pic.jpg",
     profileCompletion: 92,
   },
   dashboardStats: {

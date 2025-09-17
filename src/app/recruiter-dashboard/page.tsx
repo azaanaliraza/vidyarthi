@@ -30,7 +30,6 @@ export default function RecruitmentDashboard() {
     { name: "Applications", id: "applications", icon: FileText, badge: "8" },
     { name: "Interviews", id: "interviews", icon: Calendar, badge: "3" },
     { name: "Analytics", id: "analytics", icon: BarChart3 },
-    { name: "Messages", id: "messages", icon: MessageSquare, badge: "5" },
   ]
 
   return (
