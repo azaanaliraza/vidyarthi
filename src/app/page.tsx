@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronDown, Shield, GraduationCap, Bot, DollarSign, Building, X, CheckCircle, XCircle, Frown, Search, Lock, Award, TrendingUp, Coins, Users, Eye, FileCheck, Phone, Mail, MapPin } from 'lucide-react';
+import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
 // Mock form components (shadcn-style)
 const Button = ({ children, className = "", variant = "default", size = "default", ...props }: { children: React.ReactNode, className?: string, variant?: "default" | "outline" | "secondary", size?: "default" | "sm" | "lg", [key: string]: any }) => {
@@ -257,6 +258,7 @@ const Home = () => {
     message: '',
     userType: 'student'
   });
+  
   const [language, setLanguage] = useState<'en' | 'hi'>('en');
   const t = translations[language as 'en' | 'hi'];
 
@@ -378,33 +380,48 @@ const Home = () => {
               {t.heroSubtitle2}
             </p>
             
+            {/* ========== MODIFIED CODE START ========== */}
             <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
-              <Button 
-                size="lg" 
-                className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg"
-                onClick={handleDigiLockerLogin}
-                disabled={isRedirecting}
-              >
-                {isRedirecting ? (
-                  t.redirecting
-                ) : (
-                  <>
-                    <Shield className="w-5 h-5 mr-2" />
-                    {t.getVidyarthiId}
-                  </>
-                )}
-              </Button>
-              <Link href="/recruiter-dashboard">
-                <Button 
-                  variant="outline" 
-                  size="lg" 
-                  className="border-white text-white hover:bg-white hover:text-blue-900 px-8 py-4 text-lg"
-                >
-                  <Building className="w-5 h-5 mr-2" />
-                  {t.forRecruiters}
-                </Button>
-              </Link>
+                <SignedOut>
+                  {/* Student Login/Signup */}
+                  <SignUpButton mode="modal" forceRedirectUrl="/student-dashboard">
+                    <Button 
+                      size="lg" 
+                      className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg"
+                    >
+                      <Shield className="w-5 h-5 mr-2" />
+                      {t.getVidyarthiId}
+                    </Button>
+                  </SignUpButton>
+                  
+                  {/* Recruiter Login/Signup */}
+                  <SignUpButton mode="modal" forceRedirectUrl="/recruiter-dashboard">
+                     <Button 
+                        variant="outline" 
+                        size="lg" 
+                        className="border-white text-white hover:bg-white hover:text-blue-900 px-8 py-4 text-lg"
+                      >
+                        <Building className="w-5 h-5 mr-2" />
+                        {t.forRecruiters}
+                      </Button>
+                  </SignUpButton>
+                </SignedOut>
+
+                <SignedIn>
+                  <Link href="/student-dashboard">
+                     <Button
+                      size="lg"
+                      className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg"
+                    >
+                      Go to Dashboard
+                    </Button>
+                  </Link>
+                  <div className="flex items-center justify-center pt-2 sm:pt-0">
+                    <UserButton afterSignOutUrl="/" />
+                  </div>
+                </SignedIn>
             </div>
+            {/* ========== MODIFIED CODE END ========== */}
             
             <div className="mt-12 text-white/80">
               <p className="text-sm mb-4">{t.trustedBy}</p>
