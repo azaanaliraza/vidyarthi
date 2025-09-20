@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
-import { SignedIn, UserButton } from "@clerk/nextjs";
+import { SignedIn, UserButton, useAuth } from "@clerk/nextjs";
 import {
   Award, Briefcase, Users, Trophy, CheckCircle, Languages, Coins, User, Calendar, MapPin,
   Clock, ExternalLink, Star, Building2, Banknote, Plus, X, Save, Edit, UploadCloud, Loader2, Trash2, AlertTriangle, ListChecks
@@ -105,9 +105,23 @@ const translations = {
   },
 };
 
-// Main Component Starts Here
-export default function StudentDashboard() {
-  const dbUser = useQuery(api.users.get);
+export default function StudentDashboardPage() {
+    const { isLoaded } = useAuth();
+    const dbUser = useQuery(api.users.get);
+
+    if (!isLoaded || dbUser === undefined) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <Loader2 className="h-12 w-12 animate-spin text-blue-600" />
+                <p className="ml-4 text-lg">Loading Dashboard...</p>
+            </div>
+        );
+    }
+    
+    return <StudentDashboard dbUser={dbUser} />;
+}
+
+function StudentDashboard({ dbUser }: { dbUser: any }) {
   const documents = useQuery(api.documents.getDocumentsForUser) ?? [];
   const updateProfile = useMutation(api.users.updateProfile);
   const generateUploadUrl = useMutation(api.documents.generateUploadUrl);
@@ -197,15 +211,6 @@ export default function StudentDashboard() {
 
   const t = translations[language];
   
-  if (dbUser === undefined) {
-    return (
-        <div className="flex items-center justify-center min-h-screen">
-            <Loader2 className="h-12 w-12 animate-spin text-blue-600" />
-            <p className="ml-4 text-lg">Loading Dashboard...</p>
-        </div>
-    );
-  }
-
   const compulsoryDocs = getCompulsoryDocs();
   const uploadedCompulsoryDocs = documents.filter(doc => compulsoryDocs.includes(doc.type));
   const generalDocs = documents.filter(doc => !compulsoryDocs.includes(doc.type));
@@ -487,9 +492,15 @@ export default function StudentDashboard() {
             </TabsContent>
             
             <TabsContent value="employability" className="mt-0 space-y-6">
-                <div className="text-center text-gray-500 py-8">
-                   <p>Employability score feature coming soon.</p>
-                </div>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>{t.employabilityScore}</CardTitle>
+                        <CardDescription>{t.employabilityScoreDesc}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="text-center text-gray-500 py-8">
+                       <p>Employability score feature will be added soon.</p>
+                    </CardContent>
+                </Card>
             </TabsContent>
             
             <TabsContent value="internships" className="mt-0 space-y-6">

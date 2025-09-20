@@ -1,23 +1,20 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ChevronDown, Shield, GraduationCap, Bot, DollarSign, Building, X, CheckCircle, XCircle, Frown, Search, Lock, Award, TrendingUp, Coins, Users, Eye, FileCheck, Phone, Mail, MapPin } from 'lucide-react';
-import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { Shield, Building, GraduationCap, XCircle, Frown, Search, Lock, Award, TrendingUp, Coins, Users, Mail, Phone, X } from 'lucide-react';
+import { SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
-// Mock form components (shadcn-style)
-const Button = ({ children, className = "", variant = "default", size = "default", ...props }: { children: React.ReactNode, className?: string, variant?: "default" | "outline" | "secondary", size?: "default" | "sm" | "lg", [key: string]: any }) => {
-  const baseClasses = "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background";
+// Button component for styling
+const Button = ({ children, className = "", variant = "default", size = "default", ...props }: { children: React.ReactNode, className?: string, variant?: "default" | "outline", size?: "default" | "lg", [key: string]: any }) => {
+  const baseClasses = "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:pointer-events-none";
   const variants = {
-    default: "bg-primary text-primary-foreground hover:bg-primary/90",
-    outline: "border border-input hover:bg-accent hover:text-accent-foreground",
-    secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+    default: "bg-orange-500 hover:bg-orange-600 text-white",
+    outline: "border border-white text-white hover:bg-white hover:text-blue-900",
   };
   const sizes = {
     default: "h-10 py-2 px-4",
-    sm: "h-9 px-3 rounded-md",
-    lg: "h-11 px-8 rounded-md",
+    lg: "px-8 py-4 text-lg h-14",
   };
   
   return (
@@ -30,6 +27,7 @@ const Button = ({ children, className = "", variant = "default", size = "default
   );
 };
 
+// Input and Textarea components for the contact form
 const Input = ({ className = "", ...props }: { className?: string, [key: string]: any }) => (
   <input
     className={`flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
@@ -57,8 +55,8 @@ const translations = {
     infiniteOpportunities: "Infinite Opportunities.",
     heroSubtitle: "A simple, secure student ID for education, jobs & scholarships.",
     heroSubtitle2: "Empowering India's students with verified digital identity.",
-    getVidyarthiId: "Get Vidyarthi ID",
-    forRecruiters: "For Recruiters",
+    getVidyarthiId: "I am a Student",
+    forRecruiters: "I am a Recruiter",
     trustedBy: "Trusted by Government of India",
     ministryOfEducation: "Ministry of Education",
     digilocker: "DigiLocker",
@@ -127,21 +125,6 @@ const translations = {
     contactInformation: "Contact Information",
     contactAddress: "Ministry of Education<br />Shastri Bhawan, New Delhi<br />110001, India",
     copyright: "© 2025 Vidyarthi - Government of India. All rights reserved.",
-    lastUpdated: "Last Updated: January 2025",
-    visitors: "Visitors: 1,234,567",
-    contactVidyarthiTeam: "Contact Vidyarthi Team",
-    userType: "User Type",
-    student: "Student",
-    recruiter: "Recruiter",
-    name: "Name",
-    email: "Email",
-    phoneNumber: "Phone Number",
-    organization: "Organization",
-    message: "Message",
-    submit: "Submit",
-    thankYouMessage: "Thank you for your interest! We will contact you soon.",
-    redirectingMessage: "Redirecting to DigiLocker for secure authentication...",
-    redirecting: "Redirecting...",
     governmentInitiative: "Government Initiative"
   },
   hi: {
@@ -156,8 +139,8 @@ const translations = {
     infiniteOpportunities: "अनंत अवसर।",
     heroSubtitle: "शिक्षा, नौकरियों और छात्रवृत्ति के लिए एक सरल, सुरक्षित छात्र आईडी।",
     heroSubtitle2: "सत्यापित डिजिटल पहचान के साथ भारत के छात्रों को सशक्त बनाना।",
-    getVidyarthiId: "विद्यार्थी आईडी प्राप्त करें",
-    forRecruiters: "भर्ती करने वालों के लिए",
+    getVidyarthiId: "मैं एक छात्र हूँ",
+    forRecruiters: "मैं एक भर्तीकर्ता हूँ",
     trustedBy: "भारत सरकार द्वारा विश्वसनीय",
     ministryOfEducation: "शिक्षा मंत्रालय",
     digilocker: "डिजीलॉकर",
@@ -226,39 +209,12 @@ const translations = {
     contactInformation: "संपर्क जानकारी",
     contactAddress: "शिक्षा मंत्रालय<br />शास्त्री भवन, नई दिल्ली<br />110001, भारत",
     copyright: "© 2025 विद्यार्थी - भारत सरकार। सर्वाधिकार सुरक्षित।",
-    lastUpdated: "अंतिम अपडेट: जनवरी 2025",
-    visitors: "आगंतुक: 1,234,567",
-    contactVidyarthiTeam: "विद्यार्थी टीम से संपर्क करें",
-    userType: "उपयोगकर्ता प्रकार",
-    student: "छात्र",
-    recruiter: "भर्ती करने वाला",
-    name: "नाम",
-    email: "ईमेल",
-    phoneNumber: "फ़ोन नंबर",
-    organization: "संगठन",
-    message: "संदेश",
-    submit: "प्रस्तुत",
-    thankYouMessage: "आपकी रुचि के लिए धन्यवाद! हम जल्द ही आपसे संपर्क करेंगे।",
-    redirectingMessage: "सुरक्षित प्रमाणीकरण के लिए डिजीलॉकर पर रीडायरेक्ट किया जा रहा है...",
-    redirecting: "रीडायरेक्ट कर रहा है...",
     governmentInitiative: "सरकारी पहल"
   }
 };
 
 const Home = () => {
   const [activeSection, setActiveSection] = useState('home');
-  const [showContactForm, setShowContactForm] = useState(false);
-  const [showLoginMessage, setShowLoginMessage] = useState(false);
-  const [contactMessage, setContactMessage] = useState('');
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    organization: '',
-    message: '',
-    userType: 'student'
-  });
-  
   const [language, setLanguage] = useState<'en' | 'hi'>('en');
   const t = translations[language as 'en' | 'hi'];
 
@@ -274,49 +230,8 @@ const Home = () => {
     }
   };
 
-  const handleContactSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Contact form submitted:', formData);
-    setContactMessage(t.thankYouMessage);
-    setTimeout(() => {
-      setShowContactForm(false);
-      setContactMessage('');
-    }, 2000);
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      organization: '',
-      message: '',
-      userType: 'student'
-    });
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const router = useRouter();
-  const [isRedirecting, setIsRedirecting] = useState(false);
-
-  const handleDigiLockerLogin = () => {
-    setShowLoginMessage(true);
-    setIsRedirecting(true);
-    setTimeout(() => {
-      router.push('/student-dashboard');
-    }, 2000);
-  };
-
   return (
-    <div className="min-h-screen bg-white" style={{
-      '--saffron': '#FF9933',
-      '--navy': '#000080',
-      '--white': '#FFFFFF'
-    } as React.CSSProperties}>
-      {/* Header/Navbar */}
+    <div className="min-h-screen bg-white">
       <header className="fixed top-0 w-full bg-white shadow-md z-50" style={{ borderBottom: '3px solid #FF9933' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -355,7 +270,6 @@ const Home = () => {
         </div>
       </header>
 
-      {/* Hero Section */}
       <section id="home" className="pt-20 pb-16" style={{ 
         background: 'linear-gradient(135deg, #000080 0%, #0066cc 100%)' 
       }}>
@@ -380,27 +294,25 @@ const Home = () => {
               {t.heroSubtitle2}
             </p>
             
-            {/* ========== MODIFIED CODE START ========== */}
             <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
                 <SignedOut>
-                  {/* Student Login/Signup */}
-                  <SignUpButton mode="modal" forceRedirectUrl="/student-dashboard">
-                    <Button 
-                      size="lg" 
-                      className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg"
-                    >
+                  <SignUpButton 
+                      mode="modal" 
+                      forceRedirectUrl="/dashboard"
+                      unsafeMetadata={{ role: "student" }}
+                  >
+                    <Button size="lg">
                       <Shield className="w-5 h-5 mr-2" />
                       {t.getVidyarthiId}
                     </Button>
                   </SignUpButton>
-                  
-                  {/* Recruiter Login/Signup */}
-                  <SignUpButton mode="modal" forceRedirectUrl="/recruiter-dashboard">
-                     <Button 
-                        variant="outline" 
-                        size="lg" 
-                        className="border-white text-white hover:bg-white hover:text-blue-900 px-8 py-4 text-lg"
-                      >
+
+                  <SignUpButton 
+                      mode="modal" 
+                      forceRedirectUrl="/dashboard"
+                      unsafeMetadata={{ role: "recruiter_pending" }}
+                  >
+                     <Button size="lg" variant="outline">
                         <Building className="w-5 h-5 mr-2" />
                         {t.forRecruiters}
                       </Button>
@@ -408,20 +320,14 @@ const Home = () => {
                 </SignedOut>
 
                 <SignedIn>
-                  <Link href="/student-dashboard">
-                     <Button
-                      size="lg"
-                      className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg"
-                    >
-                      Go to Dashboard
-                    </Button>
+                  <Link href="/dashboard">
+                     <Button size="lg">Go to Dashboard</Button>
                   </Link>
                   <div className="flex items-center justify-center pt-2 sm:pt-0">
                     <UserButton afterSignOutUrl="/" />
                   </div>
                 </SignedIn>
             </div>
-            {/* ========== MODIFIED CODE END ========== */}
             
             <div className="mt-12 text-white/80">
               <p className="text-sm mb-4">{t.trustedBy}</p>
@@ -437,7 +343,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Problem Section */}
       <section id="problem" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -493,7 +398,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Solution Section */}
       <section id="solution" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -559,7 +463,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* How It Works */}
       <section id="features" className="py-20" style={{ background: 'linear-gradient(135deg, #f8f9ff 0%, #e6f2ff 100%)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -611,8 +514,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Impact Section */}
-      <section className="py-20 bg-white">
+      <section id="impact" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-6" style={{ color: '#000080' }}>
@@ -629,19 +531,15 @@ const Home = () => {
               <h3 className="text-xl font-semibold mb-4 text-gray-900">{t.forStudents}</h3>
               <ul className="space-y-2 text-gray-600">
                 <li className="flex items-center">
-                  <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
                   {t.studentBenefit1}
                 </li>
                 <li className="flex items-center">
-                  <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
                   {t.studentBenefit2}
                 </li>
                 <li className="flex items-center">
-                  <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
                   {t.studentBenefit3}
                 </li>
                 <li className="flex items-center">
-                  <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
                   {t.studentBenefit4}
                 </li>
               </ul>
@@ -652,19 +550,15 @@ const Home = () => {
               <h3 className="text-xl font-semibold mb-4 text-gray-900">{t.forRecruitersImpact}</h3>
               <ul className="space-y-2 text-gray-600">
                 <li className="flex items-center">
-                  <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
                   {t.recruiterBenefit1}
                 </li>
                 <li className="flex items-center">
-                  <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
                   {t.recruiterBenefit2}
                 </li>
                 <li className="flex items-center">
-                  <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
                   {t.recruiterBenefit3}
                 </li>
                 <li className="flex items-center">
-                  <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
                   {t.recruiterBenefit4}
                 </li>
               </ul>
@@ -675,19 +569,15 @@ const Home = () => {
               <h3 className="text-xl font-semibold mb-4 text-gray-900">{t.forGovernment}</h3>
               <ul className="space-y-2 text-gray-600">
                 <li className="flex items-center">
-                  <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
                   {t.governmentBenefit1}
                 </li>
                 <li className="flex items-center">
-                  <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
                   {t.governmentBenefit2}
                 </li>
                 <li className="flex items-center">
-                  <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
                   {t.governmentBenefit3}
                 </li>
                 <li className="flex items-center">
-                  <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
                   {t.governmentBenefit4}
                 </li>
               </ul>
@@ -696,40 +586,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Statistics */}
-      <section className="py-20" style={{ background: '#000080' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-6">
-              {t.transformingEducation}
-            </h2>
-            <p className="text-xl text-white/80">
-              {t.transformingEducationSubtitle}
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-4 gap-8 text-center">
-            <div className="text-white">
-              <div className="text-4xl font-bold text-orange-400 mb-2">250M+</div>
-              <div className="text-white/80">{t.studentsInIndia}</div>
-            </div>
-            <div className="text-white">
-              <div className="text-4xl font-bold text-orange-400 mb-2">1.5M+</div>
-              <div className="text-white/80">{t.educationalInstitutions}</div>
-            </div>
-            <div className="text-white">
-              <div className="text-4xl font-bold text-orange-400 mb-2">50K+</div>
-              <div className="text-white/80">{t.higherEducationInstitutions}</div>
-            </div>
-            <div className="text-white">
-              <div className="text-4xl font-bold text-orange-400 mb-2">₹2L Cr</div>
-              <div className="text-white/80">{t.annualScholarshipBudget}</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
       <footer id="contact" className="bg-gray-900 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8 mb-12">
@@ -788,128 +644,10 @@ const Home = () => {
               <p className="text-gray-400 text-sm">
                 {t.copyright}
               </p>
-              <div className="flex items-center space-x-6 mt-4 md:mt-0">
-                <span className="text-gray-400 text-sm">|</span>
-              </div>
             </div>
           </div>
         </div>
       </footer>
-
-      {/* Contact Modal */}
-      {showContactForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-xl font-bold" style={{ color: '#000080' }}>
-                  {t.contactVidyarthiTeam}
-                </h3>
-                <button onClick={() => setShowContactForm(false)}>
-                  <X className="w-6 h-6 text-gray-500" />
-                </button>
-              </div>
-              
-              {!contactMessage ? (
-                <form onSubmit={handleContactSubmit} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      {t.userType}
-                    </label>
-                    <select
-                      name="userType"
-                      value={formData.userType}
-                      onChange={handleInputChange}
-                      className="w-full border border-gray-300 rounded-md px-3 py-2"
-                      required
-                    >
-                      <option value="student">{t.student}</option>
-                      <option value="recruiter">{t.recruiter}</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      {t.name}
-                    </label>
-                    <Input 
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      {t.email}
-                    </label>
-                    <Input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      {t.phoneNumber}
-                    </label>
-                    <Input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  {formData.userType === 'recruiter' && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        {t.organization}
-                      </label>
-                      <Input
-                        type="text"
-                        name="organization"
-                        value={formData.organization}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                  )}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      {t.message}
-                    </label>
-                    <Textarea
-                      name="message"
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                  <Button type="submit" className="w-full">
-                    {t.submit}
-                  </Button>
-                </form>
-              ) : (
-                <div className="text-center py-8">
-                  <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                  <p className="text-lg font-semibold text-gray-800">{contactMessage}</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Login Message Modal */}
-      {showLoginMessage && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg p-6 max-w-sm w-full text-center">
-            <Lock className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-            <p className="text-lg font-semibold text-gray-800">{t.redirectingMessage}</p>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

@@ -24,20 +24,18 @@ http.route({
 
       switch (result.type) {
         case "user.created":
+          // --- MODIFIED: Read the role from the metadata we passed from the frontend ---
+          const role = result.data.unsafe_metadata.role as string || "student";
           await ctx.runMutation(internal.users.createUser, {
             email: result.data.email_addresses[0]?.email_address,
             name: `${result.data.first_name ?? ""} ${result.data.last_name ?? ""}`,
             clerkId: result.data.id,
+            role: role, // Pass the dynamic role
           });
       }
-
-      return new Response(null, {
-        status: 200,
-      });
+      return new Response(null, { status: 200 });
     } catch (err) {
-      return new Response("Webhook Error", {
-        status: 400,
-      });
+      return new Response("Webhook Error", { status: 400 });
     }
   }),
 });
