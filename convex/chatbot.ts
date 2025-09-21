@@ -3,14 +3,14 @@ import { action } from "./_generated/server";
 import { v } from "convex/values";
 import { api } from "./_generated/api";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { Id } from "./_generated/dataModel";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 export const askChatbot = action({
   args: {
-    // We now expect the extracted text from the documents to be passed in
+    // --- MODIFIED: Add documentTexts to the function's arguments ---
     documentTexts: v.string(),
-    // The message history remains the same
     messages: v.array(v.object({
         role: v.string(),
         parts: v.array(v.object({ text: v.string() })),
@@ -24,8 +24,8 @@ export const askChatbot = action({
     if (!user) throw new Error("User not found");
 
     const systemPrompt = `
-      You are "Vidyarthi Dost," a helpful AI career counselor. 
-      Your goal is to provide supportive and actionable advice based on the user's profile and the content of their uploaded documents.
+      You are "Vidyarthi Dost," a helpful AI career counselor for students in India.
+      Provide supportive and actionable advice based on the user's profile and the content of their uploaded documents.
       ALWAYS answer in clear, well-formatted markdown.
 
       **User Profile:**
