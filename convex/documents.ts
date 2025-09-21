@@ -1,14 +1,12 @@
-// convex/documents.ts
 import { v } from "convex/values";
-import { internalAction, mutation, query } from "./_generated/server";
-import { Doc, Id } from "./_generated/dataModel";
+import { mutation, query } from "./_generated/server";
 
-// Function to generate a temporary URL for uploading a file
+// Function to generate a temporary URL for uploading a file directly to Convex
 export const generateUploadUrl = mutation(async (ctx) => {
   return await ctx.storage.generateUploadUrl();
 });
 
-// Function to save the document details after it's uploaded
+// Function to save the document details after it's uploaded to Convex
 export const saveDocument = mutation({
   args: {
     storageId: v.id("_storage"),
@@ -21,12 +19,12 @@ export const saveDocument = mutation({
     if (!identity) throw new Error("User not authenticated");
 
     await ctx.db.insert("documents", {
-      userId: identity.subject, // Link document to the user
+      userId: identity.subject,
       storageId: args.storageId,
       fileName: args.fileName,
       type: args.type,
       issuer: args.issuer,
-      status: "Pending", // All new documents are pending verification
+      status: "Pending",
     });
   },
 });
@@ -42,7 +40,6 @@ export const getDocumentsForUser = query({
       .withIndex("by_userId", (q) => q.eq("userId", identity.subject))
       .collect();
     
-    // Return documents with their storage URLs for viewing
     return Promise.all(
         documents.map(async (doc) => ({
             ...doc,
@@ -52,6 +49,7 @@ export const getDocumentsForUser = query({
   },
 });
 
+// Function to delete a document and its corresponding file
 export const deleteDocument = mutation({
   args: { documentId: v.id("documents") },
   handler: async (ctx, args) => {
@@ -60,14 +58,18 @@ export const deleteDocument = mutation({
 
     const doc = await ctx.db.get(args.documentId);
 
-    // Ensure the user owns the document before deleting
     if (!doc || doc.userId !== identity.subject) {
       throw new Error("Document not found or user does not have permission");
     }
 
-    // Delete the file from storage
     await ctx.storage.delete(doc.storageId);
-    // Delete the document record from the database
     await ctx.db.delete(args.documentId);
   },
+});
+
+// convex/documents.ts
+// ... (at the end of the file)
+export const getDocumentById = query({
+    args: { id: v.id("documents") },
+    handler: async (ctx, args) => await ctx.db.get(args.id)
 });

@@ -17,10 +17,13 @@ const Button = ({ children, className = "", variant = "default", size = "default
     lg: "px-8 py-4 text-lg h-14",
   };
   
+  // We remove the Clerk-specific prop so it doesn't get passed to the DOM element
+  const { unsafeMetadata, ...restProps } = props;
+
   return (
     <button 
       className={`${baseClasses} ${variants[variant]} ${sizes[size]} ${className}`}
-      {...props}
+      {...restProps} // Use the remaining props
     >
       {children}
     </button>

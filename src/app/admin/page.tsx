@@ -3,7 +3,7 @@
 import { useQuery, useAction } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Check, Loader2 } from "lucide-react";
 import { useState } from "react";
 
@@ -24,11 +24,7 @@ export default function AdminPage() {
     };
 
     if (pendingRecruiters === undefined) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <Loader2 className="h-12 w-12 animate-spin" />
-            </div>
-        );
+        return <div className="flex items-center justify-center min-h-screen"><Loader2 className="h-12 w-12 animate-spin" /></div>;
     }
 
     return (
@@ -47,6 +43,7 @@ export default function AdminPage() {
                                     <div>
                                         <p className="font-semibold">{recruiter.name}</p>
                                         <p className="text-sm text-gray-500">{recruiter.email}</p>
+                                        {/* --- ADDED: Display the organization name --- */}
                                         <p className="text-sm font-bold text-blue-700 mt-1">{recruiter.organization}</p>
                                     </div>
                                     <Button 
@@ -54,11 +51,7 @@ export default function AdminPage() {
                                         disabled={approvingId === recruiter.clerkId}
                                         className="bg-green-600 hover:bg-green-700"
                                     >
-                                        {approvingId === recruiter.clerkId ? (
-                                            <Loader2 className="h-4 w-4 animate-spin" />
-                                        ) : (
-                                            <Check className="h-4 w-4 mr-2" />
-                                        )}
+                                        {approvingId === recruiter.clerkId ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4 mr-2" />}
                                         Approve
                                     </Button>
                                 </CardContent>

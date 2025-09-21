@@ -1,12 +1,14 @@
 "use client"
 import { useState, useEffect } from "react"
-import { useQuery, useMutation } from "convex/react";
+import { useQuery, useMutation, useAction } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { SignedIn, UserButton, useAuth } from "@clerk/nextjs";
+import ReactMarkdown from 'react-markdown';
+import * as pdfjsLib from "pdfjs-dist";
 import {
-  Award, Briefcase, Users, Trophy, CheckCircle, Languages, Coins, User, Calendar, MapPin,
-  Clock, ExternalLink, Star, Building2, Banknote, Plus, X, Save, Edit, UploadCloud, Loader2, Trash2, AlertTriangle, ListChecks
+  Award, Briefcase, Users, Trophy, CheckCircle, Languages, Coins, User, Calendar,
+  Clock, Plus, X, Save, Edit, UploadCloud, Loader2, Trash2, AlertTriangle, ListChecks, MessageSquare, Send, Bot
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -105,22 +107,97 @@ const translations = {
   },
 };
 
-export default function StudentDashboardPage() {
-    const { isLoaded } = useAuth();
-    const dbUser = useQuery(api.users.get);
+// --- Chatbot Component ---
+// --- PDF.js worker configuration ---
+pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
 
-    if (!isLoaded || dbUser === undefined) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <Loader2 className="h-12 w-12 animate-spin text-blue-600" />
-                <p className="ml-4 text-lg">Loading Dashboard...</p>
-            </div>
-        );
-    }
-    
-    return <StudentDashboard dbUser={dbUser} />;
+interface PdfTextItem { str: string; [key: string]: any; }
+
+// --- Chatbot Component ---
+function Chatbot({ documents }: { documents: any[] }) {
+    const [isOpen, setIsOpen] = useState(false);
+    const [messages, setMessages] = useState<{ role: string, parts: { text: string }[] }[]>([]);
+    const [input, setInput] = useState("");
+    const askChatbot = useAction(api.chatbot.askChatbot);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleSendMessage = async () => {
+        if (!input.trim()) return;
+
+        const newUserMessage = { role: "user", parts: [{ text: input }] };
+        const newMessages = [...messages, newUserMessage];
+        setMessages(newMessages); setInput(""); setIsLoading(true);
+
+        try {
+            // --- NEW: Extract text from PDFs on the client ---
+            let documentTexts = "";
+            if (documents.length > 0) {
+                const docContents = await Promise.all(
+                    documents.map(async (doc) => {
+                        try {
+                            const response = await fetch(doc.url);
+                            const arrayBuffer = await response.arrayBuffer();
+                            const docInit = pdfjsLib.getDocument(new Uint8Array(arrayBuffer));
+                            const pdf = await docInit.promise;
+                            let text = "";
+                            for (let i = 1; i <= pdf.numPages; i++) {
+                                const page = await pdf.getPage(i);
+                                const content = await page.getTextContent();
+                                text += content.items.map((item: any) => ('str' in item ? item.str : '')).join(" ") + "\n";
+                            }
+                            return `\n--- Document: ${doc.fileName} ---\n${text.substring(0, 1500)}...\n--- End ---`;
+                        } catch (e) {
+                            return `\n--- Document: ${doc.fileName} ---\n[Could not read content]\n--- End ---`;
+                        }
+                    })
+                );
+                documentTexts = docContents.join("\n\n");
+            }
+            // --------------------------------------------------
+
+            const result = await askChatbot({ messages: newMessages, documentTexts });
+            const newModelMessage = { role: "model", parts: [{ text: result }] };
+            setMessages(prevMessages => [...prevMessages, newModelMessage]);
+        } catch (error) {
+            console.error("Chatbot error:", error);
+            const errorMessage = { role: "model", parts: [{ text: "Sorry, I'm having trouble connecting. Please check the server logs." }] };
+            setMessages(prevMessages => [...prevMessages, errorMessage]);
+        }
+        setIsLoading(false);
+    };
+
+    return (
+        <div className="fixed bottom-6 right-6 z-50">
+            {isOpen && (
+                <Card className="w-96 h-[500px] flex flex-col shadow-2xl rounded-2xl mb-2 animate-in fade-in-5 slide-in-from-bottom-5 duration-300">
+                    <CardHeader className="flex-row items-center gap-3 bg-blue-700 text-white rounded-t-2xl"><Bot /><CardTitle>Vidyarthi Dost</CardTitle></CardHeader>
+                    <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
+                        <div className="flex justify-start"><div className="p-3 rounded-xl max-w-xs bg-slate-100 text-slate-800"><div className="prose prose-sm"><ReactMarkdown>Hello! How can I help you today?</ReactMarkdown></div></div></div>
+                        {messages.map((msg, index) => (
+                            <div key={index} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}><div className={`p-3 rounded-xl max-w-xs ${msg.role === 'user' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-800'}`}><div className="prose prose-sm"><ReactMarkdown>{msg.parts[0].text}</ReactMarkdown></div></div></div>
+                        ))}
+                         {isLoading && <div className="flex justify-start"><div className="p-3 rounded-lg bg-slate-100 text-slate-800"><Loader2 className="h-4 w-4 animate-spin"/></div></div>}
+                    </CardContent>
+                    <div className="p-4 border-t flex items-center gap-2"><Input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask me anything..." onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()} disabled={isLoading} /><Button onClick={handleSendMessage} disabled={isLoading}><Send className="h-4 w-4" /></Button></div>
+                </Card>
+            )}
+            <Button onClick={() => setIsOpen(!isOpen)} className="rounded-full h-16 w-16 bg-orange-500 hover:bg-orange-600 shadow-lg">{isOpen ? <X className="h-8 w-8" /> : <MessageSquare className="h-8 w-8" />}</Button>
+        </div>
+    );
 }
 
+
+// --- Wrapper Component for Loading State ---
+export default function StudentDashboardPage() {
+    const { isLoaded } = useAuth();
+    const dbUser = useQuery(api.users.get, isLoaded ? undefined : "skip");
+    if (!isLoaded || dbUser === undefined) {
+        return <div className="flex items-center justify-center min-h-screen"><Loader2 className="h-12 w-12 animate-spin text-blue-600" /></div>;
+    }
+    return dbUser ? <StudentDashboard dbUser={dbUser} /> : null;
+}
+
+// --- Main Dashboard Component ---
 function StudentDashboard({ dbUser }: { dbUser: any }) {
   const documents = useQuery(api.documents.getDocumentsForUser) ?? [];
   const updateProfile = useMutation(api.users.updateProfile);
@@ -542,11 +619,12 @@ function StudentDashboard({ dbUser }: { dbUser: any }) {
             <DialogFooter>
                 <Button variant="outline" onClick={() => setIsUploadDialogOpen(false)}>Cancel</Button>
                 <Button onClick={() => handleFileUpload(uploadState.file!, uploadState.type, uploadState.issuer, uploadState.name)} disabled={!uploadState.file}>
-                    <UploadCloud className="w-4 h-4 mr-2" /> Upload
+                    <UploadCloud className="w-4 w-4 mr-2" /> Upload
                 </Button>
             </DialogFooter>
         </DialogContent>
       </Dialog>
+      <Chatbot documents={documents} />
     </div>
   )
 }
