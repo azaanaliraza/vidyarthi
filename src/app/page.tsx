@@ -610,7 +610,6 @@ const Home = () => {
                 </div>
                 <div className="flex items-center">
                   <Mail className="w-4 h-4 text-orange-400 mr-2" />
-                  <span className="text-gray-400">support@vidyarthi.gov.in</span>
                 </div>
               </div>
             </div>
