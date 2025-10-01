@@ -48,7 +48,6 @@ const Textarea = ({ className = "", ...props }: { className?: string, [key: stri
 const translations = {
   en: {
     vidyarthi: "Vidyarthi",
-    govOfIndia: "Government of India",
     home: "Home",
     problem: "Problem",
     solution: "Solution",
@@ -60,7 +59,6 @@ const translations = {
     heroSubtitle2: "Empowering India's students with verified digital identity.",
     getVidyarthiId: "I am a Student",
     forRecruiters: "I am a Recruiter",
-    trustedBy: "Trusted by Government of India",
     ministryOfEducation: "Ministry of Education",
     digilocker: "DigiLocker",
     aadhaarVerified: "Aadhaar Verified",
@@ -127,12 +125,10 @@ const translations = {
     rti: "RTI",
     contactInformation: "Contact Information",
     contactAddress: "Ministry of Education<br />Shastri Bhawan, New Delhi<br />110001, India",
-    copyright: "© 2025 Vidyarthi - Government of India. All rights reserved.",
-    governmentInitiative: "Government Initiative"
+    copyright: "© 2025 Vidyarthi. All rights reserved.",
   },
   hi: {
     vidyarthi: "विद्यार्थी",
-    govOfIndia: "भारत सरकार",
     home: "होम",
     problem: "समस्या",
     solution: "समाधान",
@@ -144,7 +140,6 @@ const translations = {
     heroSubtitle2: "सत्यापित डिजिटल पहचान के साथ भारत के छात्रों को सशक्त बनाना।",
     getVidyarthiId: "मैं एक छात्र हूँ",
     forRecruiters: "मैं एक भर्तीकर्ता हूँ",
-    trustedBy: "भारत सरकार द्वारा विश्वसनीय",
     ministryOfEducation: "शिक्षा मंत्रालय",
     digilocker: "डिजीलॉकर",
     aadhaarVerified: "आधार सत्यापित",
@@ -211,8 +206,7 @@ const translations = {
     rti: "आरटीआई",
     contactInformation: "संपर्क जानकारी",
     contactAddress: "शिक्षा मंत्रालय<br />शास्त्री भवन, नई दिल्ली<br />110001, भारत",
-    copyright: "© 2025 विद्यार्थी - भारत सरकार। सर्वाधिकार सुरक्षित।",
-    governmentInitiative: "सरकारी पहल"
+    copyright: "© 2025 विद्यार्थी। सर्वाधिकार सुरक्षित।",
   }
 };
 
@@ -243,7 +237,6 @@ const Home = () => {
               </div>
               <div>
                 <h1 className="text-xl font-bold" style={{ color: '#000080' }}>{t.vidyarthi}</h1>
-                <p className="text-xs text-gray-600">{t.govOfIndia}</p>
               </div>
             </div>
             
@@ -278,13 +271,6 @@ const Home = () => {
       }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="py-20">
-            <div className="mb-6">
-              <div className="inline-flex items-center space-x-2 bg-white/10 rounded-full px-4 py-2 text-white">
-                <Shield className="w-4 h-4" />
-                <span className="text-sm">{t.governmentInitiative}</span>
-              </div>
-            </div>
-            
             <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
               {t.oneUnifiedId}
               <br />
@@ -330,17 +316,6 @@ const Home = () => {
                     <UserButton afterSignOutUrl="/" />
                   </div>
                 </SignedIn>
-            </div>
-            
-            <div className="mt-12 text-white/80">
-              <p className="text-sm mb-4">{t.trustedBy}</p>
-              <div className="flex justify-center items-center space-x-8 opacity-60">
-                <span>{t.ministryOfEducation}</span>
-                <span>•</span>
-                <span>{t.digilocker}</span>
-                <span>•</span>
-                <span>{t.aadhaarVerified}</span>
-              </div>
             </div>
           </div>
         </div>
@@ -599,7 +574,6 @@ const Home = () => {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold">{t.vidyarthi}</h3>
-                  <p className="text-xs text-gray-400">{t.govOfIndia}</p>
                 </div>
               </div>
               <p className="text-gray-400 text-sm mb-4">
